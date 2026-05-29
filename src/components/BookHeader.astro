@@ -1,0 +1,41 @@
+---
+interface Props {
+  bookId: string;
+  bookTitle: string;
+  pageTitle?: string;
+}
+const { bookId, bookTitle, pageTitle } = Astro.props;
+---
+<header class="book-header">
+  <div class="hdr-left">
+    <button class="icon-btn" id="open-contents" aria-label="Contents (c)" title="Contents">
+      <span class="ico" style="--ico:url(/icons/view-list.svg)"></span>
+    </button>
+    <a class="icon-btn" href={`/${bookId}`} aria-label="Back to cover" title="Back">
+      <span class="ico" style="--ico:url(/icons/arrow-left.svg)"></span>
+    </a>
+  </div>
+
+  <nav class="breadcrumbs" aria-label="Breadcrumbs">
+    <a href="/" class="bcr-icon" aria-label="Library" title="Library">
+      <span class="ico" style="--ico:url(/icons/books.svg); --ico-size:1.1em"></span>
+    </a>
+    <span class="bcr-sep">›</span>
+    <a href={`/${bookId}`} class="bcr-book">{bookTitle}</a>
+    {pageTitle && (
+      <>
+        <span class="bcr-sep">›</span>
+        <span class="bcr-page">{pageTitle}</span>
+      </>
+    )}
+  </nav>
+
+  <div class="hdr-right">
+    <button class="icon-btn" id="toggle-fullscreen" aria-label="Fullscreen (f)" title="Fullscreen">
+      <span class="ico" style="--ico:url(/icons/expand.svg)"></span>
+    </button>
+    <button class="icon-btn" id="open-search" aria-label="Search (/)" title="Search">
+      <span class="ico" style="--ico:url(/icons/search.svg)"></span>
+    </button>
+  </div>
+</header>

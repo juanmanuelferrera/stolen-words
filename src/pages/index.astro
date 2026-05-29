@@ -1,0 +1,45 @@
+---
+import '../styles/reset.css';
+import '../styles/themes.css';
+import '../styles/writebook.css';
+import { getBooks } from '../lib/books';
+
+const books = await getBooks();
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Library — Stolen Words</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <script is:inline>
+      (function () {
+        var html = document.documentElement;
+        var get = function (k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } };
+        html.dataset.theme = get('wb-theme', 'light');
+        html.dataset.font  = get('wb-font', 'serif');
+        html.dataset.size  = get('wb-size', '4');
+      })();
+    </script>
+  </head>
+  <body>
+    <section class="library">
+      <h1>Library</h1>
+      <p class="lede">A small library, free to read.
+        Each book here is the original — verified and unaltered.</p>
+
+      <div class="books">
+        {books.map(b => (
+          <a class="book" href={`/${b.id}`}>
+            <span class="lang">{b.lang}</span>
+            <h3>{b.title}</h3>
+            {b.subtitle && <p>{b.subtitle}</p>}
+          </a>
+        ))}
+      </div>
+    </section>
+  </body>
+</html>

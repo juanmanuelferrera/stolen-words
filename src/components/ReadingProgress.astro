@@ -1,0 +1,19 @@
+---
+// Thin progress bar that tracks scroll on long pages.
+---
+<div class="reading-progress" id="reading-progress" style="width: 0;"></div>
+<script is:inline>
+  (function () {
+    const bar = document.getElementById('reading-progress');
+    if (!bar) return;
+    function update() {
+      const h = document.documentElement;
+      const total = h.scrollHeight - h.clientHeight;
+      const pct = total > 0 ? (h.scrollTop / total) * 100 : 0;
+      bar.style.width = pct + '%';
+    }
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+  })();
+</script>

@@ -1,0 +1,106 @@
+---
+// In-book search dialog (Writebook style).
+// Uses Pagefind index built at /pagefind/ on build.
+---
+<dialog class="search-dialog" id="search-dialog" aria-label="Search">
+  <button class="search-close" id="search-close" aria-label="Close">
+    <span class="ico" style="--ico:url(/icons/remove.svg); --ico-size:1em"></span>
+  </button>
+  <form class="search-form" id="search-form" role="search" action="/search">
+    <span class="search-icon" aria-hidden="true">
+      <span class="ico" style="--ico:url(/icons/search.svg); --ico-size:1.3em"></span>
+    </span>
+    <input
+      type="search"
+      id="search-input"
+      name="q"
+      placeholder="Find in this book…"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <button type="submit" class="search-submit" aria-label="Search">
+      <span class="ico" style="--ico:url(/icons/arrow-right.svg); --ico-size:1em"></span>
+    </button>
+  </form>
+  <div class="search-results" id="search-results" hidden></div>
+</dialog>
+
+<script is:inline>
+  (function () {
+    var dlg = document.getElementById('search-dialog');
+    var openBtn = document.getElementById('open-search');
+    var closeBtn = document.getElementById('search-close');
+    var form = document.getElementById('search-form');
+    var input = document.getElementById('search-input');
+    var results = document.getElementById('search-results');
+    if (!dlg || !openBtn) return;
+
+    function open() {
+      if (typeof dlg.showModal === 'function') dlg.showModal();
+      else dlg.setAttribute('open', '');
+      setTimeout(function () { input && input.focus(); }, 30);
+    }
+    function close() {
+      if (typeof dlg.close === 'function') dlg.close();
+      else dlg.removeAttribute('open');
+    }
+
+    openBtn.addEventListener('click', open);
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    dlg.addEventListener('click', function (e) {
+      if (e.target === dlg) close();
+    });
+    window.addEventListener('keydown', function (e) {
+      if (e.key === '/' && document.activeElement && document.activeElement.tagName !== 'INPUT') {
+        e.preventDefault();
+        open();
+      }
+      if (e.key === 'Escape') close();
+    });
+
+    // Live results via Pagefind (loaded lazily, only if available).
+    var pf = null;
+    function loadPagefind() {
+      if (pf) return Promise.resolve(pf);
+      return import('/pagefind/pagefind.js').then(function (mod) {
+        pf = mod;
+        return pf;
+      }).catch(function () {
+        pf = false; // mark as unavailable
+        return null;
+      });
+    }
+
+    var timer = null;
+    input && input.addEventListener('input', function () {
+      var q = input.value.trim();
+      if (!q) { results.hidden = true; results.innerHTML = ''; return; }
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(function () {
+        loadPagefind().then(function (mod) {
+          if (!mod) {
+            results.hidden = false;
+            results.innerHTML = '<p class="search-noindex">Search index not available yet. Build the site to enable.</p>';
+            return;
+          }
+          mod.search(q).then(function (sr) {
+            Promise.all(sr.results.slice(0, 8).map(function (r) { return r.data(); }))
+              .then(function (items) {
+                if (!items.length) {
+                  results.hidden = false;
+                  results.innerHTML = '<p class="search-empty">No results.</p>';
+                  return;
+                }
+                results.hidden = false;
+                results.innerHTML = items.map(function (it) {
+                  return '<a class="search-result" href="' + it.url + '">' +
+                    '<strong>' + (it.meta && it.meta.title ? it.meta.title : it.url) + '</strong>' +
+                    '<span>' + (it.excerpt || '').slice(0, 180) + '</span></a>';
+                }).join('');
+              });
+          });
+        });
+      }, 160);
+    });
+  })();
+</script>

@@ -1,0 +1,40 @@
+---
+import { render } from 'astro:content';
+import ReaderLayout from '../../layouts/ReaderLayout.astro';
+import PrevNext from '../../components/PrevNext.astro';
+import { getBooks, getBook, getChapters, getChapter, getNeighbours, chapterSlug } from '../../lib/books';
+
+export async function getStaticPaths() {
+  const books = await getBooks();
+  const paths = [];
+  for (const b of books) {
+    const chapters = await getChapters(b.id);
+    for (const c of chapters) {
+      paths.push({
+        params: { book: b.id, chapter: chapterSlug(c.id) },
+        props: { entry: c, bookMeta: b },
+      });
+    }
+  }
+  return paths;
+}
+
+const { entry, bookMeta } = Astro.props;
+const { book: bookId, chapter: currentSlug } = Astro.params;
+const chapters = await getChapters(bookId!);
+const { prev, next, index, total } = await getNeighbours(bookId!, currentSlug!);
+
+const { Content } = await render(entry);
+---
+<ReaderLayout
+  bookId={bookMeta.id}
+  bookTitle={bookMeta.title}
+  bookLang={bookMeta.lang}
+  pageTitle={entry.data.title}
+  chapters={chapters}
+  currentSlug={currentSlug}
+>
+  <h1>{entry.data.title}</h1>
+  <Content />
+  <PrevNext bookId={bookMeta.id} prev={prev} next={next} />
+</ReaderLayout>

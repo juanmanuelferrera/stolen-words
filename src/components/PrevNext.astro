@@ -1,0 +1,28 @@
+---
+interface Chapter {
+  data: { title: string };
+  id: string;
+}
+interface Props {
+  bookId: string;
+  prev: Chapter | null;
+  next: Chapter | null;
+}
+import { chapterSlug } from '../lib/books';
+const { bookId, prev, next } = Astro.props;
+const u = (slug: string) => `/${bookId}/${slug}`;
+---
+<nav class="prev-next" aria-label="Page navigation">
+  {prev && (
+    <a class="pill prev-pill" href={u(chapterSlug(prev.id))}>
+      <span class="ico pill-arrow" style="--ico:url(/icons/arrow-left.svg); --ico-size:1em"></span>
+      <span><strong>Previous:</strong> {prev.data.title}</span>
+    </a>
+  )}
+  {next && (
+    <a class="pill next-pill" href={u(chapterSlug(next.id))}>
+      <span><strong>Next:</strong> {next.data.title}</span>
+      <span class="ico pill-arrow" style="--ico:url(/icons/arrow-right.svg); --ico-size:1em"></span>
+    </a>
+  )}
+</nav>

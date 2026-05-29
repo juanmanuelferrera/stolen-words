@@ -1,0 +1,45 @@
+---
+import '../../styles/reset.css';
+import '../../styles/themes.css';
+import '../../styles/writebook.css';
+import { getBooks, getBook, getChapters, chapterSlug } from '../../lib/books';
+
+export async function getStaticPaths() {
+  const books = await getBooks();
+  return books.map(b => ({ params: { book: b.id } }));
+}
+
+const { book: bookId } = Astro.params;
+const book = await getBook(bookId!);
+if (!book) throw new Error(`Book not found: ${bookId}`);
+const chapters = await getChapters(bookId!);
+const firstReadable = chapters.find(c => !c.data.isCover) ?? chapters[0];
+const startSlug = firstReadable ? chapterSlug(firstReadable.id) : '';
+---
+<!doctype html>
+<html lang={book.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{book.title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <script is:inline>
+      (function () {
+        var html = document.documentElement;
+        var get = function (k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } };
+        html.dataset.theme = get('wb-theme', 'light');
+        html.dataset.font  = get('wb-font', 'serif');
+        html.dataset.size  = get('wb-size', '4');
+      })();
+    </script>
+  </head>
+  <body>
+    <section class="cover-page">
+      <h1>{book.title}</h1>
+      {book.subtitle && <p class="subtitle">{book.subtitle}</p>}
+      <a class="start" href={`/${bookId}/${startSlug}`}>Begin reading →</a>
+    </section>
+  </body>
+</html>

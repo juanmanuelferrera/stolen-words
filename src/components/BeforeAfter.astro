@@ -1,0 +1,35 @@
+---
+interface Props {
+  reference: string;
+  original: string;
+  revised: string;
+  context?: string;
+  sourceOriginal?: string;
+  sourceRevised?: string;
+}
+const { reference, original, revised, context, sourceOriginal, sourceRevised } = Astro.props;
+const id = reference.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+---
+<section class="before-after" id={id}>
+  <div class="reference">
+    <a href={`#${id}`}>{reference}</a>
+  </div>
+  <h4>Documented change</h4>
+
+  <div class="versions">
+    <div class="version">
+      <span class="badge original">Original (1972)</span>
+      <p>{original}</p>
+      {sourceOriginal && <div class="source">— {sourceOriginal}</div>}
+    </div>
+    <div class="version">
+      <span class="badge revised">Revised (1983+)</span>
+      <p>{revised}</p>
+      {sourceRevised && <div class="source">— {sourceRevised}</div>}
+    </div>
+  </div>
+
+  {context && <div class="context">{context}</div>}
+
+  <a class="permalink" href={`#${id}`}>🔗 Permanent link to this change</a>
+</section>

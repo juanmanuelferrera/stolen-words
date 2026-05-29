@@ -1,0 +1,22 @@
+{
+  "name": "stolen-words",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A Writebook-style book reader for Stolen Words, built in Astro.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.0.0",
+    "@astrojs/sitemap": "^3.2.0",
+    "astro": "^5.0.0"
+  },
+  "devDependencies": {
+    "pagefind": "^1.1.0"
+  }
+}

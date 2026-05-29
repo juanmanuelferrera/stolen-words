@@ -1,0 +1,133 @@
+---
+import '../styles/reset.css';
+import '../styles/themes.css';
+import '../styles/writebook.css';
+import BookHeader from '../components/BookHeader.astro';
+import ContentsDrawer from '../components/ContentsDrawer.astro';
+import SettingsDrawer from '../components/SettingsDrawer.astro';
+import SearchDialog from '../components/SearchDialog.astro';
+import ReadingProgress from '../components/ReadingProgress.astro';
+
+interface Props {
+  bookId: string;
+  bookTitle: string;
+  bookLang: string;
+  pageTitle: string;
+  chapters: any[];
+  currentSlug?: string;
+}
+const { bookId, bookTitle, bookLang, pageTitle, chapters, currentSlug } = Astro.props;
+---
+<!doctype html>
+<html lang={bookLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{pageTitle} · {bookTitle}</title>
+    <script is:inline>
+      (function () {
+        var html = document.documentElement;
+        var get = function (k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } };
+        html.dataset.theme   = get('wb-theme', 'light');
+        html.dataset.font    = get('wb-font', 'sans');
+        html.dataset.size    = get('wb-size', '4');
+        html.dataset.justify = get('wb-justify', 'off');
+      })();
+    </script>
+  </head>
+  <body>
+    <ReadingProgress />
+    <BookHeader bookId={bookId} bookTitle={bookTitle} pageTitle={pageTitle} />
+
+    <main class="reader" data-pagefind-body>
+      <article>
+        <slot />
+      </article>
+    </main>
+
+    <ContentsDrawer
+      bookId={bookId}
+      bookTitle={bookTitle}
+      chapters={chapters}
+      currentSlug={currentSlug}
+    />
+    <SettingsDrawer />
+    <SearchDialog />
+
+    <script is:inline>
+      (function () {
+        // Drawer open/close
+        function bind(btnId, drawerId, overlayId) {
+          var btn = document.getElementById(btnId);
+          var drawer = document.getElementById(drawerId);
+          var overlay = document.getElementById(overlayId);
+          if (!btn || !drawer || !overlay) return;
+          function open()  { drawer.classList.add('open'); overlay.classList.add('open'); }
+          function close() { drawer.classList.remove('open'); overlay.classList.remove('open'); }
+          btn.addEventListener('click', open);
+          overlay.addEventListener('click', close);
+          window.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') close();
+          });
+        }
+        bind('open-contents', 'contents-drawer', 'contents-overlay');
+        bind('open-settings', 'settings-drawer', 'settings-overlay');
+
+        // Fullscreen
+        var fsBtn = document.getElementById('toggle-fullscreen');
+        if (fsBtn) {
+          fsBtn.addEventListener('click', function () {
+            if (!document.fullscreenElement) {
+              document.documentElement.requestFullscreen().catch(function () {});
+            } else {
+              document.exitFullscreen();
+            }
+          });
+          document.addEventListener('fullscreenchange', function () {
+            document.body.classList.toggle('is-fullscreen', !!document.fullscreenElement);
+          });
+        }
+
+        // Keyboard shortcuts: c, s, f, ← →
+        window.addEventListener('keydown', function (e) {
+          var t = e.target;
+          if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+          if (e.key === 'c') document.getElementById('open-contents')?.click();
+          if (e.key === 's') document.getElementById('open-settings')?.click();
+          if (e.key === 'f') document.getElementById('toggle-fullscreen')?.click();
+          if (e.key === 'ArrowLeft') {
+            var p = document.querySelector('.prev-next .prev-pill');
+            if (p) p.click();
+          }
+          if (e.key === 'ArrowRight') {
+            var n = document.querySelector('.prev-next .next-pill');
+            if (n) n.click();
+          }
+        });
+
+        // Settings: persist + apply on click
+        function refreshActiveStates() {
+          var html = document.documentElement;
+          document.querySelectorAll('[data-setting]').forEach(function (group) {
+            var key = group.dataset.setting;
+            var current = html.dataset[key];
+            group.querySelectorAll('button').forEach(function (b) {
+              b.classList.toggle('active', b.dataset.value === current);
+            });
+          });
+        }
+        document.querySelectorAll('[data-setting] button').forEach(function (b) {
+          b.addEventListener('click', function () {
+            var group = b.closest('[data-setting]');
+            var key = group.dataset.setting;
+            var val = b.dataset.value;
+            document.documentElement.dataset[key] = val;
+            try { localStorage.setItem('wb-' + key, val); } catch (e) {}
+            refreshActiveStates();
+          });
+        });
+        refreshActiveStates();
+      })();
+    </script>
+  </body>
+</html>

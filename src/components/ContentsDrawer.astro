@@ -1,0 +1,29 @@
+---
+import { chapterSlug } from '../lib/books';
+interface Chapter { data: { title: string; order: number }; id: string; }
+interface Props {
+  bookId: string;
+  bookTitle: string;
+  chapters: Chapter[];
+  currentSlug?: string;
+}
+const { bookId, bookTitle, chapters, currentSlug } = Astro.props;
+---
+<div class="drawer-overlay" id="contents-overlay"></div>
+<aside class="drawer contents" id="contents-drawer" aria-label="Contents">
+  <h3>{bookTitle}</h3>
+  <ol>
+    {chapters.map((c) => {
+      const slug = chapterSlug(c.id);
+      const isCurrent = slug === currentSlug;
+      return (
+        <li>
+          <a
+            href={`/${bookId}/${slug}`}
+            class={isCurrent ? 'current' : ''}
+          >{c.data.title}</a>
+        </li>
+      );
+    })}
+  </ol>
+</aside>
