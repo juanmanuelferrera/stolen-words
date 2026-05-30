@@ -2,7 +2,7 @@
 import '../../styles/reset.css';
 import '../../styles/themes.css';
 import '../../styles/writebook.css';
-import { getBooks, getBook, getChapters, chapterSlug } from '../../lib/books';
+import { getBooks, getBook, getChapters, chapterSlug, getLangSiblings } from '../../lib/books';
 
 export async function getStaticPaths() {
   const books = await getBooks();
@@ -15,6 +15,7 @@ if (!book) throw new Error(`Book not found: ${bookId}`);
 const chapters = await getChapters(bookId!);
 const firstReadable = chapters.find(c => !c.data.isCover) ?? chapters[0];
 const startSlug = firstReadable ? chapterSlug(firstReadable.id) : '';
+const langs = await getLangSiblings(bookId!, null);
 ---
 <!doctype html>
 <html lang={book.lang}>
@@ -36,6 +37,24 @@ const startSlug = firstReadable ? chapterSlug(firstReadable.id) : '';
     </script>
   </head>
   <body>
+    <header class="cover-top">
+      <a class="cover-home" href="/" aria-label="Library">
+        <span class="ico" style="--ico:url(/icons/books.svg); --ico-size:1.1em"></span>
+        <span>Library</span>
+      </a>
+      {langs.length > 1 && (
+        <nav class="lang-switch" aria-label="Language">
+          {langs.map(l => (
+            <a
+              href={l.href}
+              class:list={['lang-btn', { 'is-current': l.isCurrent }]}
+              hreflang={l.lang}
+              aria-current={l.isCurrent ? 'page' : undefined}
+            >{l.label}</a>
+          ))}
+        </nav>
+      )}
+    </header>
     <section class="cover-page">
       <h1>{book.title}</h1>
       {book.subtitle && <p class="subtitle">{book.subtitle}</p>}

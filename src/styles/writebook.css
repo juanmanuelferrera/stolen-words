@@ -147,6 +147,67 @@ html[data-justify="on"] article p { text-align: justify; hyphens: auto; }
   outline-offset: 2px;
 }
 
+/* Language switcher (header + cover) */
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--pill-radius);
+  padding: 0.18em 0.25em;
+  font-size: 0.85em;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: transparent;
+}
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2em;
+  padding: 0.3em 0.6em;
+  border-radius: var(--pill-radius);
+  color: var(--fg);
+  text-decoration: none;
+  opacity: 0.55;
+  transition: opacity var(--transition), background var(--transition), color var(--transition);
+}
+.lang-btn:hover { opacity: 1; background: var(--panel); }
+.lang-btn.is-current {
+  opacity: 1;
+  background: var(--fg);
+  color: var(--bg);
+}
+.lang-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Cover-page top bar (Library + lang switch) */
+.cover-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  max-width: var(--column);
+  margin: 0 auto;
+}
+.cover-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  color: var(--fg);
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: 0.95em;
+  font-weight: 500;
+  opacity: 0.75;
+  transition: opacity var(--transition);
+}
+.cover-home:hover { opacity: 1; }
+
 /* SVG icon as currentColor via CSS mask-image (works for any theme) */
 .ico {
   display: inline-block;
@@ -190,6 +251,51 @@ html[data-justify="on"] article p { text-align: justify; hyphens: auto; }
 @media (max-width: 720px) {
   .book-header { grid-template-columns: auto auto; }
   .breadcrumbs { display: none; }
+}
+
+/* ============================================================
+   MOBILE — phones and small tablets
+   ============================================================ */
+@media (max-width: 560px) {
+  .book-header {
+    padding: 0.7rem 0.6rem;
+    gap: 0.4rem;
+  }
+  .book-header .hdr-left,
+  .book-header .hdr-right { gap: 0.35rem; }
+
+  /* Slightly smaller circular buttons */
+  :root { --icon-btn-size: 2.35em; }
+
+  /* Hide fullscreen on mobile — browsers don't honour it reliably,
+     and gestures are the native equivalent. */
+  #toggle-fullscreen { display: none; }
+
+  /* Compact lang switcher: text only, tighter */
+  .lang-switch {
+    font-size: 0.78em;
+    padding: 0.14em 0.18em;
+  }
+  .lang-btn {
+    min-width: 1.8em;
+    padding: 0.28em 0.45em;
+  }
+
+  /* Reading column: edge-to-edge with small gutter */
+  .reader { padding: 1.5rem 1rem 4rem; }
+  :root { --size-base: 1.12rem; --line: 1.55; }
+  article h1 { font-size: 1.7rem; }
+  article h2 { font-size: 1.3rem; }
+
+  /* Cover page top bar wraps gracefully */
+  .cover-top { padding: 0.8rem 1rem; }
+
+  /* Prev/Next: stack on very narrow screens */
+  .prev-next { gap: 0.7rem; padding-top: 1.5rem; }
+  .pill { font-size: 0.88em; padding: 0.7em 1.1em; }
+
+  /* Drawers full-width on phones */
+  .drawer { width: 100%; max-width: 100vw; }
 }
 
 /* ============================================================

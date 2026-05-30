@@ -8,6 +8,12 @@ import SettingsDrawer from '../components/SettingsDrawer.astro';
 import SearchDialog from '../components/SearchDialog.astro';
 import ReadingProgress from '../components/ReadingProgress.astro';
 
+interface LangSibling {
+  lang: string;
+  label: string;
+  href: string;
+  isCurrent: boolean;
+}
 interface Props {
   bookId: string;
   bookTitle: string;
@@ -15,8 +21,9 @@ interface Props {
   pageTitle: string;
   chapters: any[];
   currentSlug?: string;
+  langs?: LangSibling[];
 }
-const { bookId, bookTitle, bookLang, pageTitle, chapters, currentSlug } = Astro.props;
+const { bookId, bookTitle, bookLang, pageTitle, chapters, currentSlug, langs = [] } = Astro.props;
 ---
 <!doctype html>
 <html lang={bookLang}>
@@ -37,7 +44,7 @@ const { bookId, bookTitle, bookLang, pageTitle, chapters, currentSlug } = Astro.
   </head>
   <body>
     <ReadingProgress />
-    <BookHeader bookId={bookId} bookTitle={bookTitle} pageTitle={pageTitle} />
+    <BookHeader bookId={bookId} bookTitle={bookTitle} pageTitle={pageTitle} langs={langs} />
 
     <main class="reader" data-pagefind-body>
       <article>

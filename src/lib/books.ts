@@ -57,3 +57,37 @@ export function chapterSlug(id: string): string {
   const last = id.split('/').pop() ?? id;
   return last.replace(/\.(md|mdx)$/, '');
 }
+
+/**
+ * Build the language-sibling list for the current book/chapter.
+ * Matches sibling books by stripping the `-en|-es|-hi` suffix, then
+ * picks the chapter in each sibling that shares the same `order`.
+ * If no chapter with that order exists in a sibling, fall back to its cover.
+ *
+ * Pass `currentOrder = null` for cover pages — every sibling will resolve to its cover.
+ */
+export async function getLangSiblings(currentBookId: string, currentOrder: number | null) {
+  const books = await getBooks();
+  const base = currentBookId.replace(/-(en|es|hi)$/, '');
+  const order = { en: 1, es: 2, hi: 3 } as Record<string, number>;
+
+  const siblings = [];
+  for (const b of books) {
+    const otherBase = b.id.replace(/-(en|es|hi)$/, '');
+    if (otherBase !== base) continue;
+    let href = `/${b.id}`;
+    if (currentOrder !== null) {
+      const chapters = await getChapters(b.id);
+      const match = chapters.find(c => c.data.order === currentOrder);
+      if (match) href = `/${b.id}/${chapterSlug(match.id)}`;
+    }
+    const label = b.lang === 'hi' ? 'हि' : b.lang.toUpperCase();
+    siblings.push({
+      lang: b.lang,
+      label,
+      href,
+      isCurrent: b.id === currentBookId,
+    });
+  }
+  return siblings.sort((a, c) => (order[a.lang] ?? 99) - (order[c.lang] ?? 99));
+}

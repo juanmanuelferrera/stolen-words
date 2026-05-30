@@ -1,10 +1,17 @@
 ---
+interface LangSibling {
+  lang: string;
+  label: string;
+  href: string;
+  isCurrent: boolean;
+}
 interface Props {
   bookId: string;
   bookTitle: string;
   pageTitle?: string;
+  langs?: LangSibling[];
 }
-const { bookId, bookTitle, pageTitle } = Astro.props;
+const { bookId, bookTitle, pageTitle, langs = [] } = Astro.props;
 ---
 <header class="book-header">
   <div class="hdr-left">
@@ -31,6 +38,19 @@ const { bookId, bookTitle, pageTitle } = Astro.props;
   </nav>
 
   <div class="hdr-right">
+    {langs.length > 1 && (
+      <nav class="lang-switch" aria-label="Language">
+        {langs.map(l => (
+          <a
+            href={l.href}
+            class:list={['lang-btn', { 'is-current': l.isCurrent }]}
+            hreflang={l.lang}
+            aria-current={l.isCurrent ? 'page' : undefined}
+            title={`Read in ${l.label}`}
+          >{l.label}</a>
+        ))}
+      </nav>
+    )}
     <button class="icon-btn" id="toggle-fullscreen" aria-label="Fullscreen (f)" title="Fullscreen">
       <span class="ico" style="--ico:url(/icons/expand.svg)"></span>
     </button>
