@@ -16,6 +16,13 @@ const chapters = await getChapters(bookId!);
 const firstReadable = chapters.find(c => !c.data.isCover) ?? chapters[0];
 const startSlug = firstReadable ? chapterSlug(firstReadable.id) : '';
 const langs = await getLangSiblings(bookId!, null);
+
+const startCta: Record<string, string> = {
+  en: 'Begin reading →',
+  es: 'Comenzar a leer →',
+  hi: 'पढ़ना शुरू करें →',
+};
+const startLabel = startCta[book.lang] ?? startCta.en;
 ---
 <!doctype html>
 <html lang={book.lang}>
@@ -58,7 +65,7 @@ const langs = await getLangSiblings(bookId!, null);
     <section class="cover-page">
       <h1>{book.title}</h1>
       {book.subtitle && <p class="subtitle">{book.subtitle}</p>}
-      <a class="start" href={`/${bookId}/${startSlug}`}>Begin reading →</a>
+      <a class="start" href={`/${bookId}/${startSlug}`}>{startLabel}</a>
     </section>
   </body>
 </html>

@@ -4,52 +4,62 @@
  * (when there is no "next" chapter to navigate to). Drives readers to the
  * paid book on Amazon.
  *
- * Per-language copy below; falls back to English.
+ * Per-language storefront + copy. EN fallback if locale missing.
  */
 interface Props {
   lang: string;
 }
 const { lang } = Astro.props;
 
-const AMAZON_URL = "https://www.amazon.com/dp/B0FT9V3BVN";
-const PRICE = "$9.99 USD";
+const ASIN = "B0G5J51GKQ";
 
-const i18n: Record<string, {
+type Locale = {
+  storefront: string;        // amazon.com / amazon.es / amazon.in
   eyebrow: string;
   headline: string;
   body: string;
   cta: string;
   meta: string;
-}> = {
+  aria: string;
+};
+
+const i18n: Record<string, Locale> = {
   en: {
+    storefront: "amazon.com",
     eyebrow: "End of free preview",
     headline: "You've reached the end of the free sample.",
     body: "The full book — 16 chapters, including the documented side-by-side evidence, the global investigation, the cover-up, and what Prabhupāda actually wanted — is available on Amazon.",
     cta: "Continue reading on Amazon →",
-    meta: `Hardcover & Kindle · ${PRICE}`,
+    meta: "Kindle eBook · amazon.com",
+    aria: "Continue on Amazon",
   },
   es: {
+    storefront: "amazon.es",
     eyebrow: "Fin de la muestra gratuita",
     headline: "Has llegado al final de la muestra gratuita.",
     body: "El libro completo — 16 capítulos que incluyen la evidencia comparada página a página, la investigación global, el encubrimiento y lo que Prabhupāda realmente quería — está disponible en Amazon.",
     cta: "Continuar leyendo en Amazon →",
-    meta: `Tapa dura y Kindle · ${PRICE}`,
+    meta: "eBook Kindle · amazon.es · edición en inglés",
+    aria: "Continuar en Amazon",
   },
   hi: {
+    storefront: "amazon.in",
     eyebrow: "नि:शुल्क झलक का अंत",
     headline: "आप नि:शुल्क झलक के अंत तक पहुँच गए हैं।",
     body: "पूरी पुस्तक — 16 अध्याय, जिनमें प्रलेखित साथ-साथ प्रमाण, वैश्विक अन्वेषण, लीपापोती, और प्रभुपाद वास्तव में क्या चाहते थे, शामिल है — अमेज़न पर उपलब्ध है।",
     cta: "अमेज़न पर पढ़ना जारी रखें →",
-    meta: `हार्डकवर और किंडल · ${PRICE}`,
+    meta: "किंडल ईबुक · amazon.in · अंग्रेज़ी संस्करण",
+    aria: "अमेज़न पर जारी रखें",
   },
 };
 const t = i18n[lang] ?? i18n.en;
+const amazonUrl = `https://www.${t.storefront}/dp/${ASIN}`;
 ---
-<aside class="buy-teaser" aria-label="Continue on Amazon">
+<aside class="buy-teaser" aria-label={t.aria}>
   <div class="teaser-eyebrow">— {t.eyebrow} —</div>
   <h2 class="teaser-headline">{t.headline}</h2>
   <p class="teaser-body">{t.body}</p>
-  <a class="teaser-cta" href={AMAZON_URL} target="_blank" rel="noopener">
+  <a class="teaser-cta" href={amazonUrl} target="_blank" rel="noopener">
     {t.cta}
   </a>
   <div class="teaser-meta">{t.meta}</div>
