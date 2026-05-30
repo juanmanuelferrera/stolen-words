@@ -12,8 +12,9 @@ interface Props {
 const { lang } = Astro.props;
 
 type Locale = {
-  asin: string;              // Amazon ASIN for this locale's edition
+  asin: string;              // Amazon ASIN for this locale's edition (documentation breadcrumb)
   storefront: string;        // amazon.com / amazon.es / amazon.in
+  url?: string;              // Optional literal URL (e.g. amzn.eu share link); overrides asin+storefront
   eyebrow: string;
   headline: string;
   body: string;
@@ -36,6 +37,7 @@ const i18n: Record<string, Locale> = {
   es: {
     asin: "B0GBVG3NLZ",        // Spanish edition: "Palabras Robadas" paperback
     storefront: "amazon.es",
+    url: "https://amzn.eu/d/03PixYoD",  // share link preserves attribution; resolves to B0GBVG3NLZ
     eyebrow: "Fin de la muestra gratuita",
     headline: "Has llegado al final de la muestra gratuita.",
     body: "El libro completo — 16 capítulos que incluyen la evidencia comparada página a página, la investigación global, el encubrimiento y lo que Prabhupāda realmente quería — está disponible en Amazon.",
@@ -55,7 +57,7 @@ const i18n: Record<string, Locale> = {
   },
 };
 const t = i18n[lang] ?? i18n.en;
-const amazonUrl = `https://www.${t.storefront}/dp/${t.asin}`;
+const amazonUrl = t.url ?? `https://www.${t.storefront}/dp/${t.asin}`;
 ---
 <aside class="buy-teaser" aria-label={t.aria}>
   <div class="teaser-eyebrow">— {t.eyebrow} —</div>
