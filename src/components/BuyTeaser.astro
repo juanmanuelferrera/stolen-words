@@ -11,9 +11,8 @@ interface Props {
 }
 const { lang } = Astro.props;
 
-const ASIN = "B0G5HL6NSC";
-
 type Locale = {
+  asin: string;              // Amazon ASIN for this locale's edition
   storefront: string;        // amazon.com / amazon.es / amazon.in
   eyebrow: string;
   headline: string;
@@ -25,6 +24,7 @@ type Locale = {
 
 const i18n: Record<string, Locale> = {
   en: {
+    asin: "B0G5HL6NSC",        // English paperback
     storefront: "amazon.com",
     eyebrow: "End of free preview",
     headline: "You've reached the end of the free sample.",
@@ -34,15 +34,17 @@ const i18n: Record<string, Locale> = {
     aria: "Continue on Amazon",
   },
   es: {
+    asin: "B0GBVG3NLZ",        // Spanish edition: "Palabras Robadas" paperback
     storefront: "amazon.es",
     eyebrow: "Fin de la muestra gratuita",
     headline: "Has llegado al final de la muestra gratuita.",
     body: "El libro completo — 16 capítulos que incluyen la evidencia comparada página a página, la investigación global, el encubrimiento y lo que Prabhupāda realmente quería — está disponible en Amazon.",
     cta: "Continuar leyendo en Amazon →",
-    meta: "Tapa blanda · amazon.es · edición en inglés",
+    meta: "Tapa blanda · amazon.es",
     aria: "Continuar en Amazon",
   },
   hi: {
+    asin: "B0G5HL6NSC",        // No Hindi edition exists; route to English paperback
     storefront: "amazon.in",
     eyebrow: "नि:शुल्क झलक का अंत",
     headline: "आप नि:शुल्क झलक के अंत तक पहुँच गए हैं।",
@@ -53,7 +55,7 @@ const i18n: Record<string, Locale> = {
   },
 };
 const t = i18n[lang] ?? i18n.en;
-const amazonUrl = `https://www.${t.storefront}/dp/${ASIN}`;
+const amazonUrl = `https://www.${t.storefront}/dp/${t.asin}`;
 ---
 <aside class="buy-teaser" aria-label={t.aria}>
   <div class="teaser-eyebrow">— {t.eyebrow} —</div>
