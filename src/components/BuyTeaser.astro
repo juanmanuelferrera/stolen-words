@@ -11,7 +11,7 @@ interface Props {
 }
 const { lang } = Astro.props;
 
-const ASIN = "B0G5J51GKQ";
+const ASIN = "B0G5HL6NSC";
 
 type Locale = {
   storefront: string;        // amazon.com / amazon.es / amazon.in
@@ -30,7 +30,7 @@ const i18n: Record<string, Locale> = {
     headline: "You've reached the end of the free sample.",
     body: "The full book — 16 chapters, including the documented side-by-side evidence, the global investigation, the cover-up, and what Prabhupāda actually wanted — is available on Amazon.",
     cta: "Continue reading on Amazon →",
-    meta: "Kindle eBook · amazon.com",
+    meta: "Paperback · amazon.com",
     aria: "Continue on Amazon",
   },
   es: {
@@ -39,7 +39,7 @@ const i18n: Record<string, Locale> = {
     headline: "Has llegado al final de la muestra gratuita.",
     body: "El libro completo — 16 capítulos que incluyen la evidencia comparada página a página, la investigación global, el encubrimiento y lo que Prabhupāda realmente quería — está disponible en Amazon.",
     cta: "Continuar leyendo en Amazon →",
-    meta: "eBook Kindle · amazon.es · edición en inglés",
+    meta: "Tapa blanda · amazon.es · edición en inglés",
     aria: "Continuar en Amazon",
   },
   hi: {
@@ -48,7 +48,7 @@ const i18n: Record<string, Locale> = {
     headline: "आप नि:शुल्क झलक के अंत तक पहुँच गए हैं।",
     body: "पूरी पुस्तक — 16 अध्याय, जिनमें प्रलेखित साथ-साथ प्रमाण, वैश्विक अन्वेषण, लीपापोती, और प्रभुपाद वास्तव में क्या चाहते थे, शामिल है — अमेज़न पर उपलब्ध है।",
     cta: "अमेज़न पर पढ़ना जारी रखें →",
-    meta: "किंडल ईबुक · amazon.in · अंग्रेज़ी संस्करण",
+    meta: "पेपरबैक · amazon.in · अंग्रेज़ी संस्करण",
     aria: "अमेज़न पर जारी रखें",
   },
 };
