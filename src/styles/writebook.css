@@ -299,6 +299,72 @@ html[data-justify="on"] article p { text-align: justify; hyphens: auto; }
 }
 
 /* ============================================================
+   BUY TEASER (end of free preview)
+   ============================================================ */
+
+.buy-teaser {
+  margin: 4rem auto 0;
+  max-width: 36rem;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg));
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--rule));
+  border-radius: 12px;
+}
+.buy-teaser .teaser-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0.85;
+  margin-bottom: 1.25rem;
+}
+.buy-teaser .teaser-headline {
+  font-size: 1.45rem;
+  line-height: 1.3;
+  margin: 0 0 1rem;
+  color: var(--fg);
+}
+.buy-teaser .teaser-body {
+  font-size: 1rem;
+  line-height: 1.55;
+  margin: 0 0 1.75rem;
+  color: var(--fg);
+  opacity: 0.85;
+}
+.buy-teaser .teaser-cta {
+  display: inline-block;
+  padding: 0.95em 1.6em;
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: var(--pill-radius);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  border-bottom: none;
+  transition: transform var(--transition), opacity var(--transition);
+}
+.buy-teaser .teaser-cta:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+.buy-teaser .teaser-meta {
+  margin-top: 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--fg);
+  opacity: 0.65;
+}
+@media (max-width: 560px) {
+  .buy-teaser { padding: 2rem 1.25rem; margin-top: 3rem; }
+  .buy-teaser .teaser-headline { font-size: 1.2rem; }
+  .buy-teaser .teaser-body { font-size: 0.95rem; }
+}
+
+/* ============================================================
    PREV / NEXT PILL BUTTONS (centered at bottom of chapter)
    ============================================================ */
 

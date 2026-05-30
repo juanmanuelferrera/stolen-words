@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import ReaderLayout from '../../layouts/ReaderLayout.astro';
 import PrevNext from '../../components/PrevNext.astro';
+import BuyTeaser from '../../components/BuyTeaser.astro';
 import { getBooks, getBook, getChapters, getChapter, getNeighbours, chapterSlug, getLangSiblings } from '../../lib/books';
 
 export async function getStaticPaths() {
@@ -38,5 +39,6 @@ const { Content } = await render(entry);
 >
   <h1>{entry.data.title}</h1>
   <Content />
+  {!next && <BuyTeaser lang={bookMeta.lang} />}
   <PrevNext bookId={bookMeta.id} prev={prev} next={next} />
 </ReaderLayout>
