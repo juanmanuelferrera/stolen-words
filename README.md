@@ -10,6 +10,10 @@ Built with [Astro](https://astro.build), deployed free on [Cloudflare Pages](htt
 - **Bring your own theme.** Reader chooses font, size, and theme; choices are remembered.
 - **Multi-book library.** One installation, many books (translations, briefs, compilations).
 
+## Books in the library
+
+`src/content/books/` holds three editions: `stolen-words-en`, `stolen-words-es` and `stolen-words-hi` (English, Spanish, Hindi). `DEPLOY.md` has the step-by-step Cloudflare Pages guide (in Spanish).
+
 ## Run locally
 
 ```bash
